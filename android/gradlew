@@ -216,10 +216,38 @@ set -- \
         org.gradle.wrapper.GradleWrapperMain \
         "$@"
 
-# Stop when "xargs" is not available.
-if ! command -v xargs >/dev/null 2>&1
-then
-    die "xargs is not available"
+
+# Check if xargs is available, if not try to install it
+if ! command -v xargs >/dev/null 2>&1; then
+    # Try to detect Ubuntu/Debian based systems
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        if [ "$ID" = "ubuntu" ] || [ "$ID" = "debian" ]; then
+            echo "xargs not found, attempting to install via apt..."
+             apt-get update &&  apt-get install -y findutils
+        else
+            echo "xargs not found, attempting to install via package manager..."
+            # Try common package managers for other distros
+            if command -v yum >/dev/null 2>&1; then
+                yum install -y findutils
+            elif command -v dnf >/dev/null 2>&1; then
+                dnf install -y findutils
+            elif command -v zypper >/dev/null 2>&1; then
+                zypper install -y findutils
+            elif command -v pacman >/dev/null 2>&1; then
+                pacman -S --noconfirm findutils
+            else
+                die "xargs is not available and could not determine package manager to install it"
+            fi
+        fi
+    else
+        die "xargs is not available and could not determine OS type to install it"
+    fi
+    
+    # Verify installation was successful
+    if ! command -v xargs >/dev/null 2>&1; then
+        die "Failed to install xargs"
+    fi
 fi
 
 # Use "xargs" to parse quoted args.

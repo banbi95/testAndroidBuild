@@ -1,0 +1,41 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+  
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: install android sdk
+      uses: android-actions/setup-android@v4
+      with:
+        android-sdk-version: '35.0.0'
+        android-sdk-license-accept: true
+        android-sdk-license-accept-version: '2023-03-03'
+
+    - name: install npm
+      run: npm install
+
+    - name: set up JDK 21
+      uses: actions/setup-java@v3.14.1
+      with:
+        java-version: '21'
+        distribution: 'oracle'
+        cache: gradle
+
+    - name: cd into dir
+      run: cd android
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build 
+    
+
+
