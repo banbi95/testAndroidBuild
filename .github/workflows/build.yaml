@@ -16,22 +16,22 @@ jobs:
     - name: install npm packages
       run: npm install
 
-    - name: install android sdk
-      uses: android-actions/setup-android@v3
-      with:
-        cmdline-tools-version: 16.0
-
-    - name: set up ndk
-      uses: nttld/setup-ndk@v1
-      with:
-        ndk-version: r26d
-
     - name: set up JDK 21
       uses: actions/setup-java@v3.14.1
       with:
         java-version: '21'
         distribution: 'oracle'
         cache: gradle
+
+    - name: install android sdk
+      uses: android-actions/setup-android@v3
+      with:
+        cmdline-tools-version: 12266719
+
+    - name: set up ndk
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r26d
 
     - name: cd into dir
       run: cd android
