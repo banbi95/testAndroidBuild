@@ -13,15 +13,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: install android sdk
-      uses: android-actions/setup-android@v4
-      with:
-        android-sdk-version: '35.0.0'
-        android-sdk-license-accept: true
-        android-sdk-license-accept-version: '2023-03-03'
-
-    - name: install npm
+    - name: install npm packages
       run: npm install
+
+    - name: install android sdk
+      uses: android-actions/setup-android@v3
+      with:
+        cmdline-tools-version: 16.0
+
+    - name: set up ndk
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r26d
 
     - name: set up JDK 21
       uses: actions/setup-java@v3.14.1
@@ -37,5 +40,10 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build 
     
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: github.ref_type == 'tag'
+      with:
+        files: app/build/outputs/apk/release/app-release.apk
 
 
