@@ -36,7 +36,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: cd android && chmod +x ./gradlew
     - name: Build with Gradle
-      run: cd android && ./gradlew build --warningmode all
+      run: cd android && ./gradlew build --warning-mode fail 
     
     - name: Release
       uses: softprops/action-gh-release@v2
